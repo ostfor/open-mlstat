@@ -4,10 +4,12 @@ import json
 import os
 from oauth2client.service_account import ServiceAccountCredentials
 
-
-
 ACCESS_ROOT = "data/access"
 ACCESS_SPREAD_SHEET = os.path.join(ACCESS_ROOT, "spread_sheet.json")
+
+
+def reshape(l):
+    return [[e] for e in l]
 
 
 class SheetElement:
@@ -26,10 +28,12 @@ class SheetElement:
             {"range": self.sheetTitle + "!" + cellsRange, "majorDimension": majorDimension, "values": values})
 
     def prepare_set_values_append(self, range_, value_range_body, value_input_option, insert_data_option):
+        #TODO: Test it
 
         request = self.service.spreadsheets().values().append(spreadsheetId=self.spreadsheetId, range=range_,
-                                                         valueInputOption=value_input_option,
-                                                         insertDataOption=insert_data_option, body=value_range_body)
+                                                              valueInputOption=value_input_option,
+                                                              insertDataOption=insert_data_option,
+                                                              body=value_range_body)
         response = request.execute()
         return response
 
@@ -53,7 +57,7 @@ class SheetElement:
 
 class GoogleTable(object):
 
-    def __init__(self, CREDENTIALS_FILE = '/home/brailovsky/Development/.old/scnn/data/api/drive.json'):
+    def __init__(self, CREDENTIALS_FILE='/home/brailovsky/Development/.old/scnn/data/api/drive.json'):
         if not os.path.exists(ACCESS_ROOT):
             os.makedirs(ACCESS_ROOT)
 
@@ -89,7 +93,7 @@ class GoogleTable(object):
             'sheets': [{'properties': {'sheetType': 'GRID',
                                        'sheetId': 0,
                                        'title': 'Parameters',
-                                       'gridProperties': {'rowCount': 2, 'columnCount': 10}}}]
+                                       'gridProperties': {'rowCount': 2, 'columnCount': 15}}}]
         }).execute()
         return spreadsheet
 
@@ -103,33 +107,24 @@ class GoogleTable(object):
         ).execute()
         return shareRes
 
-
-
-
-
     def set_title(self):
         titles = ["ID", "Date", "Run_Date", "Epoch", "Loss", "Accuracy", "Model weights Link", "Model configuration",
-                  "Model run command", "Commit"]
-        self.sheet_element.prepare_set_values("A1:J1", self.reshape(titles), "COLUMNS")
-        self.sheet_element.prepare_set_values("A2:J2", self.reshape(self.fake_query()), "COLUMNS")
+                  "Model run command", "Commit", "Test Set Link", "Train Set Link", "Statics Snapshots Folder",
+                  "Server Name", "Time per epoch"]
+        self.sheet_element.prepare_set_values("A1:O1", reshape(titles), "COLUMNS")
         self.sheet_element.run_prepared()
 
-def SheetQuery():
+
+class SheetQuery():
     def __init__(self, start_id=0):
-
         # TODO: append
-
-
-        self.id = start_id
-        self.__query = [str(start_id), "", "", "", "", "", "Model weights Link", "Model configuration",
-         "Model run command", "Commit"]
-    def reshape(self, l):
-        return [[e] for e in l]
+        self.__query = [str(start_id)] + [""] * 14
 
     def prepare_fake_query(self):
         fake_values = ["0", "0", "0", "0.1", "0.9", "http://aaa.aa", "{}", "./run --param 1", "afs55dwgsdg"]
         num = 1
         return [num] + fake_values
+
 
 if __name__ == '__main__':
     gt = GoogleTable()
