@@ -26,10 +26,10 @@ THE SOFTWARE.
 import os
 from apiclient.http import MediaFileUpload
 
-from google_drive.drive_object_base import GoogleDriveObject
-from tools import get_object
+from open_mlstat.google_drive import GoogleDriveObject
+from open_mlstat.tools import get_object
 
-from security.google_account import GoogleAcc
+from open_mlstat.security import GoogleAcc
 
 MIMETYPE_FILE = "application/vnd.google-apps.file"
 MIMETYPE_PHOTO = "application/vnd.google-apps.photo"

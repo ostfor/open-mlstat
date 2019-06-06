@@ -25,10 +25,9 @@ THE SOFTWARE.
 from __future__ import print_function
 import os, string
 
-from security.google_account import GoogleAcc
-from google_sheets.sheet_element import SheetElement
+from open_mlstat.google_sheets.sheet_element import SheetElement
 
-from tools import reshape, ACCESS_ROOT, get_object
+from open_mlstat.tools import reshape, ACCESS_ROOT, get_object
 
 
 

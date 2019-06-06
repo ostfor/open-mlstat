@@ -1,5 +1,6 @@
-from google_docs_stat import get_host_name, get_commit, GoogleDocsStats
-from google_sheets.sheet_query import SheetQuery
+from open_mlstat.google_docs_stat import get_host_name, get_commit, GoogleDocsStats
+from open_mlstat.google_sheets import SheetQuery
+
 
 
 def main():

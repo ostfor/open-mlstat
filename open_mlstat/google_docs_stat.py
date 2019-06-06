@@ -23,10 +23,10 @@ THE SOFTWARE.
 """
 
 
-from security.google_account import GoogleAcc
-from google_sheets.sheet import GoogleTable
-from google_sheets.sheet_query import DataLoader
-from security.google_object_access import ObjectAccess
+from open_mlstat.security import GoogleAcc
+from open_mlstat.google_sheets import GoogleTable
+from open_mlstat.google_sheets import DataLoader
+from open_mlstat.security.google_object_access import ObjectAccess
 
 import getpass
 import socket

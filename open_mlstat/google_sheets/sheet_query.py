@@ -23,7 +23,7 @@ THE SOFTWARE.
 """
 import datetime, os
 
-from google_drive.drive import GoogleDrive
+from open_mlstat.google_drive import GoogleDrive
 
 
 class DataLoader:

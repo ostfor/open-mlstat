@@ -1,6 +1,6 @@
 import os
 
-from tools import ACCESS_ROOT
+from open_mlstat.tools import ACCESS_ROOT
 
 
 class GoogleDriveObject(object):
