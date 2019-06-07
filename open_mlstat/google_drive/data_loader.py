@@ -43,14 +43,14 @@ class DataLoader:
     def zip_and_upload_data(self, data_path, container_name,
                             prefix=None, levels=("test_set", "container_name", "experiment_date")):
         if data_path is None or not os.path.exists(data_path):
-            return None
+            return data_path
         zip_path = zip_data(data_path)
         return self.upload_data(zip_path, container_name, prefix, levels)
 
     def upload_data(self, data_path, container_name, prefix=None, levels=("test_set", "container_name",
                                                                           "experiment_date")):
         if data_path is None or not os.path.exists(data_path):
-            return None
+            return data_path
         result = "Folder: https://drive.google.com/drive/u/0/folders/{}\nFile id: {}\nFilename: {}"
         curr_dir = self.root
 

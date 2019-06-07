@@ -1,3 +1,4 @@
+import datetime
 import getpass
 import socket
 
@@ -14,3 +15,7 @@ def get_host_name():
     hostname = socket.gethostname()
     username = getpass.getuser()
     return username + "_" + hostname
+
+
+def current_timestamp():
+    return datetime.datetime.now().strftime("%y%m%d_%H%M")

@@ -21,30 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
-import datetime
+from open_mlstat.tools.helpers import current_timestamp
 
 
 class SheetQuery(object):
     def __init__(self, idx, epoch, loss, run_date, accuracy=None, date=None,
                  model_config=None, run_command=None, commit=None,
                  server_id=None, time_epoch=None):
-
         self.__empty_field = "<empty>"
         self.__date = date
         if self.__date is None:
-            self.__date = datetime.datetime.now().strftime("%y%m%d_%H%M")
+            self.__date = current_timestamp()
 
         self.weights_pos = 6
         self.testset_pos = 10
         self.trainset_pos = 11
         self.snapshot_pos = 12
 
-
         self.__query = [idx, date, run_date, epoch, loss, accuracy, None, model_config, run_command,
                         commit, None, None, None, server_id, time_epoch]
 
         self.run_date = self.__query[2]
-
 
     def prepare_fake_query(self):
         fake_values = ["0", "0", "0", "0.1", "0.9", "http://aaa.aa", "{}", "./run --param 1", "afs55dwgsdg"]
@@ -72,4 +69,4 @@ class SheetQuery(object):
 
 
 if __name__ == '__main__':
-    print(SheetQuery(0, 10, 0.6,"060519").values)
+    print(SheetQuery(0, 10, 0.6, "060519").values)

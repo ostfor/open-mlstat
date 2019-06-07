@@ -36,11 +36,15 @@ class GoogleDocsStats(object):
 
         self.google_table = GoogleTable(self.__acc, self.__object_access, experiment_name)
 
-
-    def add(self, query, weights_file=None, test_set_file=None, train_set_file=None):
-        dl = DataLoader(self.__acc,self.__object_access, self.experiment_name, query.run_date, test_set_file)
+    def add(self, query, test_set_file, weights_file=None, train_set_file=None):
+        """
+        Add ad stat data to table
+        :param query: Query object
+        :param test_set_file: path to file or testset name
+        :param weights_file: path to weights to upload or just index of weights
+        :param train_set_file: path to file or trainset name
+        """
+        dl = DataLoader(self.__acc, self.__object_access, self.experiment_name, query.run_date, test_set_file)
         query.set_loadable_data(dl, weights=weights_file, test_set=test_set_file,
                                 train_set=train_set_file)
         self.google_table.values_append(query.values)
-
-
