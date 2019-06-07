@@ -57,11 +57,13 @@ class SheetQuery(object):
         return [query]
 
     def set_loadable_data(self, dataloader, test_set=None, train_set=None, weights=None,
-                          snapshot=None):
-        weights_link = dataloader.load_data(weights, "weights", prefix=self.__date)
-        testset_link = dataloader.load_data(test_set, "testset", levels=("test_set", "container_name"))
-        trainset_link = dataloader.load_data(train_set, "trainset", levels=("test_set", "container_name"))
-        snapshot_link = dataloader.load_data(snapshot, "snapshots", prefix=self.__date)
+                          snapshot=None, is_zip=True):
+        upload_method = dataloader.zip_and_upload_data if is_zip else dataloader.upload_data
+
+        weights_link = upload_method(weights, "weights", prefix=self.__date)
+        testset_link = upload_method(test_set, "testset", levels=("test_set", "container_name"))
+        trainset_link = upload_method(train_set, "trainset", levels=("test_set", "container_name"))
+        snapshot_link = upload_method(snapshot, "snapshots", prefix=self.__date)
 
         self.__query[self.weights_pos] = weights_link
         self.__query[self.testset_pos] = testset_link
