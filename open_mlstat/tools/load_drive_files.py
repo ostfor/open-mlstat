@@ -27,14 +27,16 @@ import json
 import os
 
 
-ACCESS_ROOT = "data/access"
+CONFIGS_STORAGE_ROOT = "data/files"
 
 
-def reshape(l):
-    return [[e] for e in l]
-
-
-def get_object(path_cfg, get_method):
+def load_object_by_config(path_cfg, get_method):
+    """
+    Read configuration by objects (file/folder) name or create a new if it not exists
+    :param path_cfg: path to configuration
+    :param get_method:
+    :return:
+    """
     if os.path.exists(path_cfg):
         with open(path_cfg) as sheet_f:
             data = json.load(sheet_f)

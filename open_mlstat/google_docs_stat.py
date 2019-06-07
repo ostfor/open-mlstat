@@ -22,27 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-
-from open_mlstat.security import GoogleAcc
-from open_mlstat.google_sheets import GoogleTable
-from open_mlstat.google_sheets import DataLoader
+from open_mlstat.google_sheets.sheet import GoogleTable
+from open_mlstat.google_drive.data_loader import DataLoader
 from open_mlstat.security.google_object_access import ObjectAccess
-
-import getpass
-import socket
-import git
-
-
-def get_commit():
-    repo = git.Repo(search_parent_directories=True)
-    sha = repo.head.object.hexsha
-    return sha
-
-
-def get_host_name():
-    hostname = socket.gethostname()
-    username = getpass.getuser()
-    return username + "_" + hostname
+from open_mlstat.security.google_account import GoogleAcc
 
 
 class GoogleDocsStats(object):
@@ -50,10 +33,12 @@ class GoogleDocsStats(object):
         self.experiment_name = experiment_name
         self.__acc = GoogleAcc(credentials)
         self.__object_access = ObjectAccess(self.__acc, who_access=who_access, role=role)
+
         self.google_table = GoogleTable(self.__acc, self.__object_access, experiment_name)
 
+
     def add(self, query, weights_file=None, test_set_file=None, train_set_file=None):
-        dl = DataLoader(self.__acc, self.experiment_name, query.run_date, test_set_file)
+        dl = DataLoader(self.__acc,self.__object_access, self.experiment_name, query.run_date, test_set_file)
         query.set_loadable_data(dl, weights=weights_file, test_set=test_set_file,
                                 train_set=train_set_file)
         self.google_table.values_append(query.values)

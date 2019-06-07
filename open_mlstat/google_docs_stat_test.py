@@ -1,5 +1,6 @@
-from open_mlstat.google_docs_stat import get_host_name, get_commit, GoogleDocsStats
-from open_mlstat.google_sheets import SheetQuery
+from open_mlstat.google_docs_stat import GoogleDocsStats
+from open_mlstat.tools.helpers import get_commit, get_host_name
+from open_mlstat.google_sheets.sheet_query import SheetQuery
 
 
 

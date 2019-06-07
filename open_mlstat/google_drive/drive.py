@@ -26,10 +26,10 @@ THE SOFTWARE.
 import os
 from apiclient.http import MediaFileUpload
 
-from open_mlstat.google_drive import GoogleDriveObject
-from open_mlstat.tools import get_object
+from open_mlstat.google_drive.drive_object_base import GoogleDriveObject
+from open_mlstat.tools.load_drive_files import load_object_by_config
 
-from open_mlstat.security import GoogleAcc
+from open_mlstat.security.google_object_access import ObjectAccess
 
 MIMETYPE_FILE = "application/vnd.google-apps.file"
 MIMETYPE_PHOTO = "application/vnd.google-apps.photo"
@@ -41,7 +41,7 @@ MIMETYPE_UNKNOWN = "application/vnd.google-apps.unknown"
 class GoogleDrive(object):
     class File(GoogleDriveObject):
 
-        def __init__(self, folder, google_acc, file_name="data/test.txt", mimetype="*/*", prefix=None, contain_folder="default"):
+        def __init__(self, folder, google_acc, object_access, file_name="data/test.txt", mimetype="*/*", prefix=None, contain_folder="default"):
             self.mimetype = mimetype
             self.file_name =file_name
             name = os.path.basename(file_name)
@@ -49,7 +49,8 @@ class GoogleDrive(object):
             if prefix is not None:
                 name = prefix + "_" + name
 
-            GoogleDriveObject.__init__(self, google_acc.drive_service, name, "files", contain_folder=contain_folder)
+            GoogleDriveObject.__init__(self, google_acc.drive_service, name, "files", object_acess=object_access,
+                                       contain_folder=contain_folder)
 
             self.file_metadata = {
                 'name': self.name,
@@ -58,7 +59,7 @@ class GoogleDrive(object):
             }
 
 
-            self.data = get_object(self.config_path, self.create_file)
+            self.data = load_object_by_config(self.config_path, self.create_file)
 
             self.id = self.data.get('id')
             self.access(self.id)
@@ -74,8 +75,9 @@ class GoogleDrive(object):
                                                media_body=media, fields='id').execute()
 
     class Folder(GoogleDriveObject):
-        def __init__(self, name, google_acc, parent=None, contain_folder="default"):
-            GoogleDriveObject.__init__(self, google_acc.drive_service, name, "folders", contain_folder=contain_folder)
+        def __init__(self, name, google_acc,object_access, parent=None, contain_folder="default"):
+            GoogleDriveObject.__init__(self, google_acc.drive_service, name, "folders", contain_folder=contain_folder,
+                                       object_acess=object_access)
 
             self.file_metadata = {
                 'name': name,
@@ -84,7 +86,7 @@ class GoogleDrive(object):
             if parent is not None:
                 self.file_metadata["parents"] = [parent.id]
 
-            self.data = get_object(self.config_path, self.create_folder)
+            self.data = load_object_by_config(self.config_path, self.create_folder)
 
             self.id = self.data.get('id')
             self.access(self.id)
@@ -92,17 +94,6 @@ class GoogleDrive(object):
         def create_folder(self):
             return self.service.files().create(body=self.file_metadata, fields='id').execute()
 
-    def __init__(self, google_acc):
-        # Setup the Drive v3 API
-        self.google_acc = google_acc
+    def __init__(self):
+        pass
 
-    def create_folder(self, name='root'):
-        fold = self.Folder(name, self.google_acc)
-        print(fold.id)
-
-
-if __name__ == '__main__':
-    acc = GoogleAcc()
-    folder = GoogleDrive.Folder("train_statistics", acc)
-    file = GoogleDrive.File(folder, acc)
-    print(file.id)

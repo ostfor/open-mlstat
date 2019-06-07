@@ -23,13 +23,12 @@ THE SOFTWARE.
 """
 
 from __future__ import print_function
-import os, string
+
+import os
+import string
 
 from open_mlstat.google_sheets.sheet_element import SheetElement
-
-from open_mlstat.tools import reshape, ACCESS_ROOT, get_object
-
-
+from open_mlstat.tools.load_drive_files import CONFIGS_STORAGE_ROOT, load_object_by_config
 
 DEFAULT_TITLES = ("ID", "Date", "Run_Date", "Epoch", "Loss", "Accuracy", "Model weights Link", "Model configuration",
                   "Model run command", "Commit", "Test Set Link", "Train Set Link", "Statistics Snapshots Folder",
@@ -54,11 +53,11 @@ class GoogleTable(object):
             raise NotImplementedError(
                 "Number of titles more then {} is not supported yet".format(len(string.ascii_uppercase)))
 
-        if not os.path.exists(ACCESS_ROOT):
-            os.makedirs(ACCESS_ROOT)
+        if not os.path.exists(CONFIGS_STORAGE_ROOT):
+            os.makedirs(CONFIGS_STORAGE_ROOT)
         self.google_acc = google_acc
 
-        self.__spreadsheet = get_object(os.path.join(ACCESS_ROOT, self.scope_name, "spread_sheet.json"), self.create)
+        self.__spreadsheet = load_object_by_config(os.path.join(CONFIGS_STORAGE_ROOT, self.scope_name, "spread_sheet.json"), self.create)
 
         self.object_access.set_roles(self.spread_sheet_id)
         self.__set_titles()
@@ -89,6 +88,11 @@ class GoogleTable(object):
         return request.execute()
 
     def __set_titles(self):
+        """
+        Set titles for columns
+        """
+        # reshape
+        formated_titles = [[e] for e in self.titles]
         sheet_element = SheetElement(self.google_acc.sheet_service, self.scope_name, self.spread_sheet_id)
-        sheet_element.prepare_set_values(self.columns_range, reshape(self.titles), "COLUMNS")
+        sheet_element.prepare_set_values(self.columns_range, formated_titles, "COLUMNS")
         sheet_element.run_prepared()
