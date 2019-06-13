@@ -58,8 +58,12 @@ def get_commit():
 def get_addr():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(("msn.com", 80))
-    s.getsockname()
-
+    name = s.getsockname()
+    if name is None:
+        name = socket.getsockname()
+    if name is None:
+        name = "<undefined>"
+    return name
 
 def get_host_name():
     hostname = get_addr()
