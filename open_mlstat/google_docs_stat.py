@@ -36,7 +36,7 @@ class GoogleDocsStats(object):
 
         self.google_table = GoogleTable(self.__acc, self.__object_access, experiment_name)
 
-    def add(self, query, test_set_file, weights_file=None, train_set_file=None):
+    def add(self, query, test_set_file, weights_file=None, train_set_file=None, snapshot=None):
         """
         Add ad stat data to table
         :param query: Query object
@@ -46,5 +46,5 @@ class GoogleDocsStats(object):
         """
         dl = DataLoader(self.__acc, self.__object_access, self.experiment_name, query.run_date, test_set_file)
         query.set_loadable_data(dl, weights=weights_file, test_set=test_set_file,
-                                train_set=train_set_file)
+                                train_set=train_set_file, snapshot=snapshot)
         self.google_table.values_append(query.values)
