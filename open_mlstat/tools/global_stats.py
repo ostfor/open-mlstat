@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from helpers import *
+from open_mlstat.tools.helpers import current_timestamp, get_addr, get_commit, get_host_name
 from open_mlstat.google_sheets.sheet_query import SheetQuery
 
 
