@@ -29,26 +29,6 @@ import socket
 import git
 
 
-class GlobalStats(object):
-    def __init__(self, run_date, date=None, experiment_name=None, model_config=None, run_command=None, time_epoch=None,
-                 test_path=None, train_path=None):
-        self.train_path = train_path
-        self.test_path = test_path
-        self.experiment_name = experiment_name
-        if self.experiment_name is None:
-            self.experiment_name = "Default"
-        self.server_id = get_host_name()
-        self.commit = get_commit()
-
-        self.run_date = run_date
-        self.time_epoch = time_epoch
-        self.run_command = run_command
-        self.model_config = model_config
-        self.date = date
-        if self.date is None:
-            self.date = current_timestamp()
-
-
 def get_commit():
     repo = git.Repo(search_parent_directories=True)
     sha = repo.head.object.hexsha
@@ -75,14 +55,3 @@ def current_timestamp():
     return datetime.datetime.now().strftime("%y%m%d_%H%M")
 
 
-def ml_set_statistics(log_statistics, global_stats, epoch, loss, acc, visdom_url, weights_path):
-    if log_statistics is not None:
-        query = SheetQuery(epoch, epoch, loss, global_stats.run_date,
-                           acc, global_stats.date, global_stats.model_config, global_stats.run_command,
-                           global_stats.commit, global_stats.server_id, visdom_url
-                           )
-
-        log_statistics.add(query, test_set_file=global_stats.test_path, train_set_file=global_stats.train_path,
-                           weights_file=weights_path)
-    else:
-        raise RuntimeWarning("Log statistics is None logging will not be done")
