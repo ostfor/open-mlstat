@@ -52,7 +52,8 @@ def ml_set_statistics(log_statistics, global_stats, epoch, loss, acc, visdom_url
                            acc, global_stats.date, global_stats.model_config, global_stats.run_command,
                            global_stats.commit, global_stats.server_id, visdom_url
                            )
-
+        if global_stats.date is None:
+            global_stats.date = current_timestamp()
         log_statistics.add(query, test_set_file=global_stats.test_path, train_set_file=global_stats.train_path,
                            weights_file=weights_path)
     else:

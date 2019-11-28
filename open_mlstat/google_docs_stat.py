@@ -35,6 +35,7 @@ class GoogleDocsStats(object):
         self.__object_access = ObjectAccess(self.__acc, who_access=who_access, role=role)
 
         self.google_table = GoogleTable(self.__acc, self.__object_access, experiment_name)
+        self.__acc.drive_service.files().emptyTrash()
 
     def add(self, query, test_set_file, weights_file=None, train_set_file=None, snapshot=None):
         """

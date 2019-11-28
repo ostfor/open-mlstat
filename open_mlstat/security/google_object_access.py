@@ -1,5 +1,10 @@
+from googleapiclient.errors import HttpError
+import logging
+
+
 class ObjectAccess:
     def __init__(self, acc, who_access='anyone', role='writer'):
+        self.logger= logging.getLogger(__name__)
         self.google_acc = acc
         email = None
 
@@ -13,8 +18,12 @@ class ObjectAccess:
             self.__body["value"] = email
 
     def set_roles(self, idx):
-        return self.google_acc.drive_service.permissions().create(
-            fileId=idx,
-            body=self.__body,
-            fields='id'
-        ).execute()
+        try:
+            return self.google_acc.drive_service.permissions().create(
+                fileId=idx,
+                body=self.__body,
+                fields='id'
+            ).execute()
+        except HttpError as err:
+            self.logger.error("Http Error while setting access write %s", err)
+            return None
