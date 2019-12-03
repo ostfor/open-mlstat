@@ -41,6 +41,7 @@ class GoogleDocsStats(object):
 
         self.google_table = GoogleTable(self.__acc, self.__object_access, self.experiment_name,
                                         titles=config["table_titles"])
+        self.__acc.drive_service.files().emptyTrash()
         self.__timestamp = current_timestamp()
         self.dl = DataLoader(self.__acc, self.__object_access, self.experiment_name)
         self.query = SheetQuery_1(config["table_titles"],self.dl, self.__timestamp)

@@ -71,6 +71,7 @@ class GoogleDrive(object):
                                     mimetype=self.mimetype,
                                     resumable=True)
             print("Create: ", self.file_metadata)
+
             return self.service.files().create(body=self.file_metadata,
                                                media_body=media, fields='id').execute()
 

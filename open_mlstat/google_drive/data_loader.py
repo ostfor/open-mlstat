@@ -25,11 +25,13 @@ import os
 
 from open_mlstat.google_drive.drive import GoogleDrive
 from open_mlstat.tools.zip_data import zip_data
+from googleapiclient.errors import HttpError
+import logging
 from open_mlstat.tools.helpers import current_timestamp
-
 
 class DataLoader:
     def __init__(self, google_acc, object_access, experiment_name):
+        self.logger = logging.getLogger(__name__)
         self.object_access = object_access
         self.experiment_name = experiment_name
         self.google_acc = google_acc
@@ -50,16 +52,20 @@ class DataLoader:
 
     def upload_data(self, data_path,folder_names, timestemp_prefix=False):
         #folder_names1 = self.folder_names["container_name"]
-        prefix = None
-        if timestemp_prefix:
-            prefix = current_timestamp()
-        if data_path is None or not os.path.exists(data_path):
-            return data_path
-        result = "Folder: https://drive.google.com/drive/u/0/folders/{}\nFile id: {}\nFilename: {}"
-        curr_dir = self.root
-        for folder_name in folder_names:
-            curr_dir = GoogleDrive.Folder(folder_name, self.google_acc, self.object_access, curr_dir,
-                                          contain_folder=self.experiment_name)
-        new_f = GoogleDrive.File(curr_dir, self.google_acc, self.object_access, file_name=data_path, prefix=prefix,
-                                 contain_folder=self.experiment_name)
-        return result.format(curr_dir.id, new_f.id, new_f.name)
+        try:
+	        prefix = None
+	        if timestemp_prefix:
+	            prefix = current_timestamp()
+	        if data_path is None or not os.path.exists(data_path):
+	            return data_path
+	        result = "Folder: https://drive.google.com/drive/u/0/folders/{}\nFile id: {}\nFilename: {}"
+	        curr_dir = self.root
+	        for folder_name in folder_names:
+	            curr_dir = GoogleDrive.Folder(folder_name, self.google_acc, self.object_access, curr_dir,
+	                                          contain_folder=self.experiment_name)
+	        new_f = GoogleDrive.File(curr_dir, self.google_acc, self.object_access, file_name=data_path, prefix=prefix,
+	                                 contain_folder=self.experiment_name)
+	        return result.format(curr_dir.id, new_f.id, new_f.name)
+	    except HttpError as err:
+            self.logger.error("Http Error while upload data %s", err)
+            return None

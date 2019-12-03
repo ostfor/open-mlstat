@@ -27,7 +27,8 @@ from open_mlstat.tools.helpers import current_timestamp
 class SheetQuery(object):
     def __init__(self, idx, epoch, loss, run_date, accuracy=None, date=None,
                  model_config=None, run_command=None, commit=None,
-                 server_id=None, time_epoch=None):
+                 server_id=None, time_epoch=None, visualize_plot=None):
+
         self.__empty_field = "<empty>"
         self.__date = date
         if self.__date is None:
@@ -39,7 +40,7 @@ class SheetQuery(object):
         self.snapshot_pos = 12
 
         self.__query = [idx, date, run_date, epoch, loss, accuracy, None, model_config, run_command,
-                        commit, None, None, None, server_id, time_epoch]
+                        commit, None, None, None, server_id, time_epoch, visualize_plot]
 
         self.run_date = self.__query[2]
 
