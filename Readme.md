@@ -32,8 +32,14 @@ gstat = GoogleDocsStats("<config_path>/config_example.json")
 ### Where
  
  - `experiment_name`: unique_name_for_experiment 
- - `credentials`: `<drive.json>`- google app credentials see last section
+ - `credentials`: `<drive.json>`- google app credentials. See next section.
  - `table_titles`: - Set of titles for table fields
+
+### Credentials
+
+- Create app [here](https://console.cloud.google.com/apis/credentials)
+- Enable `Google Drive API` and `Google Sheets API`
+- Create and download `service account` key in JSON format
 
 # Adding new line to a table
 
