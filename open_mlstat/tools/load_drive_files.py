@@ -27,9 +27,6 @@ import json
 import os
 
 
-CONFIGS_STORAGE_ROOT = "data/files"
-
-
 def load_object_by_config(path_cfg, get_method):
     """
     Read configuration by objects (file/folder) name or create a new if it not exists

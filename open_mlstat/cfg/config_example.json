@@ -1,0 +1,7 @@
+{
+  "experiment_name": "test",
+  "credentials": "/tmp/drive.json",
+  "table_titles": [
+    "ID", "Date", "Run_Date", "Epoch", "Loss", "Testset", "Checkpoint"
+  ]
+}

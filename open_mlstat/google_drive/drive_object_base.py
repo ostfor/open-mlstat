@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 import os
 
-from open_mlstat.tools.load_drive_files import CONFIGS_STORAGE_ROOT
+from open_mlstat.tools.constants import CONFIGS_STORAGE_ROOT
 from open_mlstat.security.google_object_access import ObjectAccess
 
 class GoogleDriveObject(object):

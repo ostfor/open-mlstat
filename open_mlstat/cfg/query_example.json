@@ -1,0 +1,14 @@
+{
+  "query": {"ID": 0, "Date": null, "Run_Date": null, "Epoch":  1, "Loss": 0.5, "Testset": "test.v1", "Checkpoint": "/tmp/ep1.ckpt"},
+  "actions": {
+    "Date":  {"action": "timestamp"},
+    "Run_Date":{"action": "run_timestamp"},
+    "Checkpoint":{
+      "action": "upload_zip",
+      "args": {
+        "save_path": "test.v1/weights/{run_timestamp}",
+        "timestemp_prefix": true
+      }
+    }
+  }
+}

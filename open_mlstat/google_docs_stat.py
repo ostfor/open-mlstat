@@ -30,6 +30,7 @@ from open_mlstat.security.google_account import GoogleAcc
 from open_mlstat.tools.helpers import current_timestamp
 from open_mlstat.google_sheets.sheet_query import SheetQuery_1
 
+
 class GoogleDocsStats(object):
     def __init__(self, config, who_access='anyone', role='writer'):
         assert os.path.exists(config)
@@ -43,15 +44,13 @@ class GoogleDocsStats(object):
                                         titles=config["table_titles"])
         self.__acc.drive_service.files().emptyTrash()
         self.__timestamp = current_timestamp()
-        self.dl = DataLoader(self.__acc, self.__object_access, self.experiment_name)
-        self.query = SheetQuery_1(config["table_titles"],self.dl, self.__timestamp)
+        self.dl = DataLoader(self.__acc, self.__object_access, self.experiment_name, self.__timestamp)
+        self.query = SheetQuery_1(config["table_titles"], self.dl, self.__timestamp)
 
     def add(self, query, actions):
         """
         Add ad stat data to table
-        :param query: Query object
-        :param test_set_file: path to file or testset name
-        :param weights_file: path to weights to upload or just index of weights
-        :param train_set_file: path to file or trainset name
+        :type query: dict
+        :type actions: dict
         """
         self.google_table.values_append(self.query.new(query, actions))

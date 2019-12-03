@@ -28,7 +28,9 @@ import os
 import string
 
 from open_mlstat.google_sheets.sheet_element import SheetElement
-from open_mlstat.tools.load_drive_files import CONFIGS_STORAGE_ROOT, load_object_by_config
+from open_mlstat.tools.load_drive_files import load_object_by_config
+from open_mlstat.tools.constants import CONFIGS_STORAGE_ROOT
+
 
 class GoogleTable(object):
 

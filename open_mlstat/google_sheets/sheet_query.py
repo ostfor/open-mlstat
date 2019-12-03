@@ -76,7 +76,7 @@ class SheetQuery_1(object):
             "upload_zip": dataloader.zip_and_upload_data,
             "upload_file": dataloader.upload_data,
             "timestamp": current_timestamp,
-            "run_timestamp": self.get_run_timestamp()
+            "run_timestamp": self.get_run_timestamp
         }
         self.titles = titles
         self.__empty_field = "<empty>"
@@ -117,13 +117,14 @@ class SheetQuery_1(object):
                 kargs = {}
                 if data is not None:
                     vargs.append(data)
-                if inserter["args"] is not None:
+                if "args" in inserter.keys() and inserter["args"] is not None:
                     if type(inserter["args"]) == dict:
                         kargs = inserter["args"]
                     elif type(inserter["args"]) == list:
                         vargs += inserter["args"]
                 _data = self.actions[inserter["action"]](*vargs, **kargs)
             query.append(_data)
+        print(query)
         return self.__qvalues(query)
 
     def __qvalues(self, query):
