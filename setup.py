@@ -12,6 +12,6 @@ setup(name='open_mlstat',
       author='Denis Brailovsky',
       author_email='denis.brailovsky@gmail.com',
       license='MIT',
-      data_files=[('', ['LICENSE', 'CHANGELOG'])],
+      data_files=[('', ['LICENSE', 'CHANGELOG.md'])],
       packages=["open_mlstat.{}".format(pkg) for pkg in find_packages("open_mlstat")] + ["open_mlstat"],
       zip_safe=False)

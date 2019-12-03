@@ -25,45 +25,41 @@ import os
 
 from open_mlstat.google_drive.drive import GoogleDrive
 from open_mlstat.tools.zip_data import zip_data
+from open_mlstat.tools.helpers import current_timestamp
 
 
 class DataLoader:
-
-    def __init__(self, google_acc, object_access, experiment_name, run_date, test_set):
+    def __init__(self, google_acc, object_access, experiment_name):
         self.object_access = object_access
         self.experiment_name = experiment_name
         self.google_acc = google_acc
-
-        self.run_date = str(run_date)
-        self.test_set_name = os.path.basename(test_set)
         self.root = GoogleDrive.Folder(self.experiment_name + "_train_statistics", self.google_acc, self.object_access,
                                        contain_folder=self.experiment_name)
         print("Data folder: ", "https://drive.google.com/drive/u/0/folders/" + self.root.id)
 
-    def zip_and_upload_data(self, data_path, container_name,
-                            prefix=None, levels=("test_set", "container_name", "experiment_date")):
+    def zip_and_upload_data(self, data_path, folder_names,
+                            timestemp_prefix=False):
         if data_path is None or not os.path.exists(data_path):
             return data_path
+        prefix = None
+        if timestemp_prefix:
+            prefix = current_timestamp()
         zip_path = zip_data(data_path)
-        return self.upload_data(zip_path, container_name, prefix, levels)
+        return self.upload_data(zip_path, folder_names, prefix)
 
-    def upload_data(self, data_path, container_name, prefix=None, levels=("test_set", "container_name",
-                                                                          "experiment_date")):
+
+    def upload_data(self, data_path,folder_names, timestemp_prefix=False):
+        #folder_names1 = self.folder_names["container_name"]
+        prefix = None
+        if timestemp_prefix:
+            prefix = current_timestamp()
         if data_path is None or not os.path.exists(data_path):
             return data_path
         result = "Folder: https://drive.google.com/drive/u/0/folders/{}\nFile id: {}\nFilename: {}"
         curr_dir = self.root
-
-        if "test_set" in levels:
-            curr_dir = GoogleDrive.Folder(self.test_set_name, self.google_acc, self.object_access, curr_dir,
+        for folder_name in folder_names:
+            curr_dir = GoogleDrive.Folder(folder_name, self.google_acc, self.object_access, curr_dir,
                                           contain_folder=self.experiment_name)
-            if "container_name" in levels:
-                curr_dir = GoogleDrive.Folder(container_name, self.google_acc, self.object_access, curr_dir,
-                                              contain_folder=self.experiment_name)
-                if "experiment_date" in levels:
-                    curr_dir = GoogleDrive.Folder(self.run_date, self.google_acc, self.object_access, curr_dir,
-                                                  contain_folder=self.experiment_name)
-
         new_f = GoogleDrive.File(curr_dir, self.google_acc, self.object_access, file_name=data_path, prefix=prefix,
                                  contain_folder=self.experiment_name)
         return result.format(curr_dir.id, new_f.id, new_f.name)

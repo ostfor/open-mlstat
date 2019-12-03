@@ -30,14 +30,9 @@ import string
 from open_mlstat.google_sheets.sheet_element import SheetElement
 from open_mlstat.tools.load_drive_files import CONFIGS_STORAGE_ROOT, load_object_by_config
 
-DEFAULT_TITLES = ("ID", "Date", "Run_Date", "Epoch", "Loss", "Accuracy", "Model weights Link", "Model configuration",
-                  "Model run command", "Commit", "Test Set Link", "Train Set Link", "Statistics Snapshots Folder",
-                  "Server Name", "Time per epoch", "Visdom / Tensorboard Link")
-
-
 class GoogleTable(object):
 
-    def __init__(self, google_acc, object_access, scope_name, titles=DEFAULT_TITLES):
+    def __init__(self, google_acc, object_access, scope_name, titles):
         """
         Create google table
         :type google_acc: GoogleAcc

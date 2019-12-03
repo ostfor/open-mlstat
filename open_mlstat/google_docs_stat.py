@@ -21,22 +21,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
-
+import json, os
 from open_mlstat.google_sheets.sheet import GoogleTable
 from open_mlstat.google_drive.data_loader import DataLoader
 from open_mlstat.security.google_object_access import ObjectAccess
 from open_mlstat.security.google_account import GoogleAcc
 
+from open_mlstat.tools.helpers import current_timestamp
+from open_mlstat.google_sheets.sheet_query import SheetQuery_1
 
 class GoogleDocsStats(object):
-    def __init__(self, experiment_name, credentials, who_access='anyone', role='writer'):
-        self.experiment_name = experiment_name
-        self.__acc = GoogleAcc(credentials)
+    def __init__(self, config, who_access='anyone', role='writer'):
+        assert os.path.exists(config)
+        with open(config, 'r') as f:
+            config = json.load(f)
+        self.experiment_name = config["experiment_name"]
+        self.__acc = GoogleAcc(config["credentials"])
         self.__object_access = ObjectAccess(self.__acc, who_access=who_access, role=role)
 
-        self.google_table = GoogleTable(self.__acc, self.__object_access, experiment_name)
+        self.google_table = GoogleTable(self.__acc, self.__object_access, self.experiment_name,
+                                        titles=config["table_titles"])
+        self.__timestamp = current_timestamp()
+        self.dl = DataLoader(self.__acc, self.__object_access, self.experiment_name)
+        self.query = SheetQuery_1(config["table_titles"],self.dl, self.__timestamp)
 
-    def add(self, query, test_set_file, weights_file=None, train_set_file=None, snapshot=None):
+    def add(self, query, actions):
         """
         Add ad stat data to table
         :param query: Query object
@@ -44,7 +53,4 @@ class GoogleDocsStats(object):
         :param weights_file: path to weights to upload or just index of weights
         :param train_set_file: path to file or trainset name
         """
-        dl = DataLoader(self.__acc, self.__object_access, self.experiment_name, query.run_date, test_set_file)
-        query.set_loadable_data(dl, weights=weights_file, test_set=test_set_file,
-                                train_set=train_set_file, snapshot=snapshot)
-        self.google_table.values_append(query.values)
+        self.google_table.values_append(self.query.new(query, actions))
