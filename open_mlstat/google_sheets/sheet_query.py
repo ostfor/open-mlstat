@@ -24,51 +24,6 @@ THE SOFTWARE.
 from open_mlstat.tools.helpers import current_timestamp
 
 
-class SheetQuery(object):
-    def __init__(self, idx, epoch, loss, run_date, accuracy=None, date=None,
-                 model_config=None, run_command=None, commit=None,
-                 server_id=None, time_epoch=None, visualize_plot=None):
-
-        self.__empty_field = "<empty>"
-        self.__date = date
-        if self.__date is None:
-            self.__date = current_timestamp()
-
-        self.weights_pos = 6
-        self.testset_pos = 10
-        self.trainset_pos = 11
-        self.snapshot_pos = 12
-
-        self.__query = [idx, date, run_date, epoch, loss, accuracy, None, model_config, run_command,
-                        commit, None, None, None, server_id, time_epoch, visualize_plot]
-
-        self.run_date = self.__query[2]
-
-    def prepare_fake_query(self):
-        fake_values = ["0", "0", "0", "0.1", "0.9", "http://aaa.aa", "{}", "./run --param 1", "afs55dwgsdg"]
-        num = 1
-        return [num] + fake_values
-
-    @property
-    def values(self):
-        query = [str(q) if q is not None else self.__empty_field for q in self.__query]
-        return [query]
-
-    def set_loadable_data(self, dataloader, test_set=None, train_set=None, weights=None,
-                          snapshot=None, is_zip=True):
-        upload_method = dataloader.zip_and_upload_data if is_zip else dataloader.upload_data
-
-        weights_link = upload_method(weights, ("test_set", "weights", "experiment_date"), prefix=self.__date)
-        testset_link = upload_method(test_set, "testset", levels=("test_set", "container_name"))
-        trainset_link = upload_method(train_set, "trainset", levels=("test_set", "container_name"))
-        snapshot_link = upload_method(snapshot, "snapshots", prefix=self.__date)
-
-        self.__query[self.weights_pos] = weights_link
-        self.__query[self.testset_pos] = testset_link
-        self.__query[self.trainset_pos] = trainset_link
-        self.__query[self.snapshot_pos] = snapshot_link
-
-
 class SheetQuery_1(object):
     def __init__(self, titles, dataloader, run_timestamp=None):
         self.run_timestamp = run_timestamp
@@ -130,7 +85,3 @@ class SheetQuery_1(object):
     def __qvalues(self, query):
         query = [str(q) if q is not None else self.__empty_field for q in query]
         return [query]
-
-
-if __name__ == '__main__':
-    print(SheetQuery(0, 10, 0.6, "060519").values)

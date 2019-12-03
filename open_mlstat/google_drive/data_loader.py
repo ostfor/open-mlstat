@@ -51,7 +51,7 @@ class DataLoader:
         zip_path = zip_data(data_path)
         return self.upload_data(zip_path, save_path, prefix)
 
-    def upload_data(self, data_path, save_path, timestemp_prefix=False):
+    def upload_data(self, data_path, save_path="other", timestemp_prefix=False):
         for k, v in self.keywords.items():
             save_path = save_path.replace(k, v)
         folder_names = save_path.split('/')
